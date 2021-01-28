@@ -6,7 +6,7 @@ Work In Progress
 
 {% api-method method="get" host="https://owner-api.teslamotors.com" path="/api/1/energy\_sites/:site\_id/status" %}
 {% api-method-summary %}
-Site Summary
+Site Summary - this endpoint seems to no longer function. Returns 404.
 {% endapi-method-summary %}
 
 {% api-method-description %}
@@ -72,8 +72,25 @@ Bearer `{access_token}` from authentication
 
 {% endapi-method-response-example-description %}
 
-```text
-
+```javascript
+{
+    "response": {
+        "solar_power": 0,
+        "energy_left": 27701,
+        "total_pack_energy": 27701,
+        "percentage_charged": 100,
+        "backup_capable": true,
+        "battery_power": 0,
+        "load_power": 525,
+        "grid_status": "Active",
+        "grid_services_active": false,
+        "grid_power": 525,
+        "grid_services_power": 0,
+        "generator_power": 0,
+        "storm_mode_active": false,
+        "timestamp": "2021-01-27T21:51:56-08:00"
+    }
+}
 ```
 {% endapi-method-response-example %}
 {% endapi-method-response %}
@@ -110,15 +127,79 @@ Bearer `{access_token}` from authentication
 
 {% endapi-method-response-example-description %}
 
-```text
-
+```javascript
+{
+    "response": {
+        "id": ":id",
+        "site_name": ":site_name",
+        "backup_reserve_percent": 100,
+        "default_real_mode": "self_consumption",
+        "installation_date": "2020-08-12T11:40:00-07:00",
+        "user_settings": {
+            "storm_mode_enabled": true,
+            "sync_grid_alert_enabled": true,
+            "breaker_alert_enabled": false
+        },
+        "components": {
+            "solar": true,
+            "solar_type": "pv_panel",
+            "battery": true,
+            "grid": true,
+            "backup": true,
+            "gateway": "teg",
+            "load_meter": true,
+            "tou_capable": true,
+            "storm_mode_capable": true,
+            "flex_energy_request_capable": false,
+            "car_charging_data_supported": false,
+            "off_grid_vehicle_charging_reserve_supported": true,
+            "vehicle_charging_performance_view_enabled": false,
+            "vehicle_charging_solar_offset_view_enabled": false,
+            "battery_solar_offset_view_enabled": true,
+            "battery_type": "ac_powerwall",
+            "configurable": true,
+            "grid_services_enabled": false
+        },
+        "version": "20.40.3",
+        "battery_count": 2,
+        "tou_settings": {
+            "optimization_strategy": "economics",
+            "schedule": [{
+                    "target": "off_peak",
+                    "week_days": [6, 0],
+                    "start_seconds": 68400,
+                    "end_seconds": 54000
+                }, {
+                    "target": "peak",
+                    "week_days": [6, 0],
+                    "start_seconds": 54000,
+                    "end_seconds": 68400
+                }, {
+                    "target": "off_peak",
+                    "week_days": [1, 2, 3, 4, 5],
+                    "start_seconds": 82800,
+                    "end_seconds": 25200
+                }, {
+                    "target": "peak",
+                    "week_days": [1, 2, 3, 4, 5],
+                    "start_seconds": 50400,
+                    "end_seconds": 75600
+                }
+            ]
+        },
+        "nameplate_power": 10000,
+        "nameplate_energy": 27000,
+        "installation_time_zone": "America/Los_Angeles",
+        "off_grid_vehicle_charging_reserve_percent": 75
+    }
+}
 ```
 {% endapi-method-response-example %}
 {% endapi-method-response %}
 {% endapi-method-spec %}
 {% endapi-method %}
 
-{% api-method method="get" host="https://owner-api.teslamotors.com" path="/api/1/energy\_sites/:site\_id/history" %}
+{% api-method method="get" host="https://owner-api.teslamotors.com" path="/api/1/energy\_sites/:site\_id/history?kind=:kind&period=:period" %}
 {% api-method-summary %}
 Historical Data
 {% endapi-method-summary %}
@@ -140,6 +221,15 @@ The `{site_id}` from the products list
 Bearer `{access_token}` from authentication
 {% endapi-method-parameter %}
 {% endapi-method-headers %}
+
+{% api-method-query-parameters %}
+{% api-method-parameter name=":kind" type="string" required=true %}
+Known valid values are energy or power
+{% endapi-method-parameter %}
+
+{% api-method-parameter name=":period" type="string" required=false %}
+Values are day, month, year or lifetime and is required if kind is energy
+{% endapi-method-parameter %}
 {% endapi-method-request %}
 
 {% api-method-response %}
